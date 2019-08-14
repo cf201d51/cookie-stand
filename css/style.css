@@ -15,7 +15,8 @@ body {
 
 body>header>nav>ul>li {
   background-color: #BFE3E3;
-  padding: 0.25em 0.5em;
+  padding: 0.25em 0.75em;
+  border: 1px solid black;
 }
 
 body>header>nav>ul>li>a {
