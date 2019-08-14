@@ -8,17 +8,17 @@
   - Function arguments
     - `minCustPerHour` - The minimum number of customers per hour
     - `maxCustPerHour` - The maximum number of customers per hour
-    - `avePerCust` - The average number of cookies purchased per customer
+    - `avePerSale` - The average number of cookies purchased per customer
   - Properties
     - `minCustPerHour` - The minimum number of customers per hour
     - `maxCustPerHour` - The maximum number of customers per hour
-    - `avePerCust` - The average number of cookies purchased per customer
+    - `avePerSale` - The average number of cookies purchased per customer
 - Refactor the following as prototype methods of the CookieShop object
   - `simulateHour()` - Random min thru max based on properties
   - `simulateDay()` - Loop thru hours and calculate number of cookies per hour, and create hour objects and push them into the simultedDay array property for each hour.  (See Hour object below.)
   - `calculateTotal()` - Iterate through cookieCountsForHours array and return the total for the location
 
-### Hour Object
+### CSHour Object
 
 - Constructor function for CSHour objects
   - Function arguments
@@ -37,7 +37,7 @@
 ### Report Object
 
 - Implement a report object with the following constructor and prototype methods
-  - A constructor that takes the following paremeters
+  - A constructor that takes the following parameters
     - `cellValueFunction` - A reference to a function that returns a value for a report cell given the following parameters
       - locationIndex
       - hourIndex
@@ -66,8 +66,9 @@
       - Create the `<tfoot>` element
       - Create the `<tr>` element
       - Loop thru hours and for each do the following
-        - Within a nested loop, iterate thru all locations for the hour and call the given `cellValueFunction(locationIndex, hourIndex)` and `rowSummary.includeValue()` functions to accumulate totals.
+        - Within a nested loop, iterate thru all locations for the hour and call the given `cellValueFunction(locationIndex, hourIndex)` and `colSummary.includeValue()` functions to accumulate totals.
         - Create the `<td>` elements for each hour with values from `colSummary.summary()` and append them to the `<tr>`
+        - Use a `rowSummary` object to compute the summary value for the full table and put it in the final `<td>` element.
       - Append the `<tr>` to the `<tfoot>` element
     - Append the `<tfoot>` element to the `<table>` element
     - Clear any previous contents of the HTML element, identified above, to accept the table

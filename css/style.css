@@ -8,8 +8,9 @@ body {
   margin: 1em;
 }
 
-#output {
+#ReportContainer {
   margin: 1em;
+  padding: 1em;
   border: 1px solid black;
 }
 
