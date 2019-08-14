@@ -16,6 +16,11 @@ var lastHour = 20;
 var controlCurve = [0.5, 0.75, 1.0, 0.6, 0.8, 1.0, 0.7, 0.4, 0.6, 0.9, 0.7, 0.5, 0.3, 0.4, 0.6];
 var useControlCurve = false;
 
+// Objects setup by initializeReports() to hold multiple report configurations
+var cookieReport;
+var customerReport;
+var tosserReport;
+
 /**
  * Creates an instance of the CSHour object (Cookie Shop Hour)
  *
@@ -265,6 +270,24 @@ Report.prototype.renderReport = function() {
   return newReport;
 };
 
+// Helper functions ---------------------------------------------
+
+/**
+ * Generate a string with the given hour in 12 hour am/pm format
+ *
+ * @param {*} hour
+ * @returns
+ */
+function hourStr(hour) {
+  var result = ((hour + 11) % 12) + 1;
+  if (hour >= 12) {
+    result += 'pm';
+  } else {
+    result += 'am';
+  }
+  return result;
+}
+
 /**
  * This is a helper function to add an element with given tag name, optional text, and class names to the given parent
  *
@@ -288,16 +311,6 @@ function addElement(parent, tagName, text, className) {
   return newElement;
 }
 
-function hourStr(hour) {
-  var result = ((hour + 11) % 12) + 1;
-  if (hour >= 12) {
-    result += 'pm';
-  } else {
-    result += 'am';
-  }
-  return result;
-}
-
 function initializeStores() {
   for (var i = 0; i < stores.length; i++) {
     var s = stores[i];
@@ -306,32 +319,49 @@ function initializeStores() {
   }
 }
 
-// Clear the table
-var reportContainer = document.getElementById('ReportContainer');
-// https://stackoverflow.com/questions/3955229/remove-all-child-elements-of-a-dom-node-in-javascript
-// below is faster than main.innerHTML = '';
-while (reportContainer.firstChild) {
-  reportContainer.removeChild(reportContainer.firstChild);
+function initializeReports() {
+  cookieReport = new Report('Daily Cookie Count', getCookieCountByLocationAndHour, SummarizeSum, 'Daily Location Total', SummarizeSum, 'Total');
+  customerReport = new Report('Daily Customer Count', getCustomerCountByLocationAndHour, SummarizeSum, 'Daily Location Total', SummarizeSum, 'Total');
+  tosserReport = new Report('Daily Cookie Tosser Report', getTosserCountByLocationAndHour, SummarizeMax, 'Daily Location Max', SummarizeMax, 'Max Tossers');
 }
 
-initializeStores();
+function init() {
+  initializeStores();
+  initializeReports();
+}
 
-var cookieReport = new Report('Daily Cookie Count', getCookieCountByLocationAndHour, SummarizeSum, 'Daily Location Total', SummarizeSum, 'Total');
-var customerReport = new Report('Daily Customer Count', getCustomerCountByLocationAndHour, SummarizeSum, 'Daily Location Total', SummarizeSum, 'Total');
-var tosserReport = new Report('Daily Cookie Tosser Report', getTosserCountByLocationAndHour, SummarizeMax, 'Daily Location Max', SummarizeMax, 'Max Tossers');
+function renderAllReportsToPage() {
 
-addElement(reportContainer, 'h2', 'Without Control Curve');
-useControlCurve = false;
-CookieShop.simulateAll();
+  // Find the element to receive the output
+  var reportContainer = document.getElementById('report_container');
 
-reportContainer.appendChild(cookieReport.renderReport());
-reportContainer.appendChild(customerReport.renderReport());
-reportContainer.appendChild(tosserReport.renderReport());
+  // Clear it
+  // the below is faster than main.innerHTML = '';
+  // https://stackoverflow.com/questions/3955229/remove-all-child-elements-of-a-dom-node-in-javascript
+  while (reportContainer.firstChild) {
+    reportContainer.removeChild(reportContainer.firstChild);
+  }
 
-addElement(reportContainer, 'h2', 'With Control Curve');
-useControlCurve = true;
-CookieShop.simulateAll();
+  addElement(reportContainer, 'h2', 'Without Control Curve');
+  useControlCurve = false;
+  CookieShop.simulateAll();
 
-reportContainer.appendChild(cookieReport.renderReport());
-reportContainer.appendChild(customerReport.renderReport());
-reportContainer.appendChild(tosserReport.renderReport());
+  reportContainer.appendChild(cookieReport.renderReport());
+  reportContainer.appendChild(customerReport.renderReport());
+  reportContainer.appendChild(tosserReport.renderReport());
+
+  addElement(reportContainer, 'h2', 'With Control Curve');
+  useControlCurve = true;
+  CookieShop.simulateAll();
+
+  reportContainer.appendChild(cookieReport.renderReport());
+  reportContainer.appendChild(customerReport.renderReport());
+  reportContainer.appendChild(tosserReport.renderReport());
+}
+
+function run() {
+  init();
+  renderAllReportsToPage();
+}
+
+run();

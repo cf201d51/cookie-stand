@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Sales</title>
+  <!-- TODO: Use the reset! -->
   <!-- <link rel="stylesheet" href="../css/reset.css"> -->
   <link rel="stylesheet" href="../css/style.css">
 </head>
@@ -20,7 +21,35 @@
     </nav>
   </header>
 
-  <section id="ReportContainer">
+  <!-- 
+  Form with input elements for the following:
+  - Store Location - required string
+  - Minimum Customers Per Hour - required integer
+  - Maximum Customers Per Hour - required integer
+  - Average Cookies Per Customer - required decimal number
+  - Submit button
+ -->
+
+  <form id="add_store_form">
+    <fieldset>
+      <div>
+        <label for="loc_name"></label>
+      </div>
+    </fieldset>
+  </form>
+
+  <form id="simulation_mode">
+    <fieldset>
+
+      <span class="title">Simulation Mode:</span>
+      <label for="random">Random</label>
+      <input type="radio" name="mode" id="random" value="R" />
+      <label for="curve">Control Curve</label>
+      <input type="radio" name="mode" id="curve" value="C" />
+    </fieldset>
+  </form>
+
+  <section id="report_container">
 
   </section>
 
