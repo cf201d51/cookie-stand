@@ -74,3 +74,19 @@ li {
   padding: 2em;
   width: 80%;
 }
+
+input[type="number"] {
+  width: 3em;
+}
+
+input:invalid+span:after {
+  position: absolute;
+  content: '✖';
+  padding-left: 5px;
+}
+
+input:valid+span:after {
+  position: absolute;
+  content: '✓';
+  padding-left: 5px;
+}

@@ -32,16 +32,31 @@
 
   <form id="add_store_form">
     <fieldset>
+      <legend>New Store</legend>
       <div>
-        <label for="loc_name"></label>
+        <label for="loc_name">Location</label>
+        <input type="text" name="loc_name" required>
+
+        <label for="min_cust">Minimum Customers Per Hour</label>
+        <input type="number" name="min_cust" min="0" value="0">
+        <!-- <span class="validity"></span> -->
+
+        <label for="max_cust">Maximum Customers Per Hour</label>
+        <input type="number" name="max_cust" min="0" value="0">
+        <!-- <span class="validity"></span> -->
+
+        <label for="ave_per_cust">Average Cookies Per Customer</label>
+        <input type="number" name="ave_per_cust" min="0" step="0.1" value="0">
+        <!-- <span class="validity"></span> -->
+
+        <button id="submit_btn" type="submit">Add New Store</button>
       </div>
     </fieldset>
   </form>
 
   <form id="simulation_mode">
     <fieldset>
-
-      <span class="title">Simulation Mode:</span>
+      <legend>Simulation Mode</legend>
       <label for="random">Random</label>
       <input type="radio" name="mode" id="random" value="R" />
       <label for="curve">Control Curve</label>

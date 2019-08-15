@@ -270,6 +270,35 @@ Report.prototype.renderReport = function() {
   return newReport;
 };
 
+function renderAllReportsToPage() {
+
+  // Find the element to receive the output
+  var reportContainer = document.getElementById('report_container');
+
+  // Clear it
+  // the below is faster than main.innerHTML = '';
+  // https://stackoverflow.com/questions/3955229/remove-all-child-elements-of-a-dom-node-in-javascript
+  while (reportContainer.firstChild) {
+    reportContainer.removeChild(reportContainer.firstChild);
+  }
+
+  addElement(reportContainer, 'h2', 'Without Control Curve');
+  useControlCurve = false;
+  CookieShop.simulateAll();
+
+  reportContainer.appendChild(cookieReport.renderReport());
+  reportContainer.appendChild(customerReport.renderReport());
+  reportContainer.appendChild(tosserReport.renderReport());
+
+  addElement(reportContainer, 'h2', 'With Control Curve');
+  useControlCurve = true;
+  CookieShop.simulateAll();
+
+  reportContainer.appendChild(cookieReport.renderReport());
+  reportContainer.appendChild(customerReport.renderReport());
+  reportContainer.appendChild(tosserReport.renderReport());
+}
+
 // Helper functions ---------------------------------------------
 
 /**
@@ -311,6 +340,8 @@ function addElement(parent, tagName, text, className) {
   return newElement;
 }
 
+// Initialization Functions ---------------------------------------
+
 function initializeStores() {
   for (var i = 0; i < stores.length; i++) {
     var s = stores[i];
@@ -325,39 +356,37 @@ function initializeReports() {
   tosserReport = new Report('Daily Cookie Tosser Report', getTosserCountByLocationAndHour, SummarizeMax, 'Daily Location Max', SummarizeMax, 'Max Tossers');
 }
 
+function onAddStorFormSubmit(event) {
+  event.preventDefault();
+  console.log('Submit!');
+
+  renderAllReportsToPage();
+}
+
+function onSimModeChange(event) {
+  var target = event.target;
+  console.log(target);
+  console.log(target.mode.value);
+}
+
+function initializeAddStoreForm() {
+  var from = document.getElementById('add_store_form');
+  from.addEventListener('submit', onAddStorFormSubmit);
+}
+
+function initializeSimModeForm() {
+  var from = document.getElementById('simulation_mode');
+  from.addEventListener('onchange', onSimModeChange);
+
+}
+
 function init() {
   initializeStores();
   initializeReports();
+  initializeAddStoreForm();
+  initializeSimModeForm();
 }
 
-function renderAllReportsToPage() {
-
-  // Find the element to receive the output
-  var reportContainer = document.getElementById('report_container');
-
-  // Clear it
-  // the below is faster than main.innerHTML = '';
-  // https://stackoverflow.com/questions/3955229/remove-all-child-elements-of-a-dom-node-in-javascript
-  while (reportContainer.firstChild) {
-    reportContainer.removeChild(reportContainer.firstChild);
-  }
-
-  addElement(reportContainer, 'h2', 'Without Control Curve');
-  useControlCurve = false;
-  CookieShop.simulateAll();
-
-  reportContainer.appendChild(cookieReport.renderReport());
-  reportContainer.appendChild(customerReport.renderReport());
-  reportContainer.appendChild(tosserReport.renderReport());
-
-  addElement(reportContainer, 'h2', 'With Control Curve');
-  useControlCurve = true;
-  CookieShop.simulateAll();
-
-  reportContainer.appendChild(cookieReport.renderReport());
-  reportContainer.appendChild(customerReport.renderReport());
-  reportContainer.appendChild(tosserReport.renderReport());
-}
 
 function run() {
   init();
