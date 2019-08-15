@@ -16,6 +16,54 @@ var lastHour = 20;
 var controlCurve = [0.5, 0.75, 1.0, 0.6, 0.8, 1.0, 0.7, 0.4, 0.6, 0.9, 0.7, 0.5, 0.3, 0.4, 0.6];
 var useControlCurve = false;
 
+// Objects set up by initializeReports() to hold multiple report configurations
+var cookieReport;
+var customerReport;
+var tosserReport;
+
+// Helper functions ---------------------------------------------
+
+/**
+ * Generate a string with the given hour in 12 hour am/pm format
+ *
+ * @param {*} hour
+ * @returns
+ */
+function hourStr(hour) {
+  var result = ((hour + 11) % 12) + 1;
+  if (hour >= 12) {
+    result += 'pm';
+  } else {
+    result += 'am';
+  }
+  return result;
+}
+
+/**
+ * This is a helper function to add an element with given tag name, optional text, and class names to the given parent
+ *
+ * @param {*} parent Optional parent element
+ * @param {*} tagName tag name of the new element
+ * @param {*} text Optional text content
+ * @param {*} className Optional class name
+ * @returns The newly created element
+ */
+function addElement(parent, tagName, text, className) {
+  var newElement = document.createElement(tagName);
+  if (text) {
+    newElement.textContent = text;
+  }
+  if (className) {
+    newElement.className = className;
+  }
+  if (parent) {
+    parent.appendChild(newElement);
+  }
+  return newElement;
+}
+
+// CSHour Object ---------------------------------------------
+
 /**
  * Creates an instance of the CSHour object (Cookie Shop Hour)
  *
@@ -120,6 +168,13 @@ SummarizeSum.prototype.summary = function() {
 // Pass one of these functions to the Report constructor to determine
 // what is reported by location and hour
 
+/**
+ *
+ *
+ * @param {*} aLocationIndex
+ * @param {*} aHourIndex
+ * @returns
+ */
 function getCookieCountByLocationAndHour(aLocationIndex, aHourIndex) {
   var shop = CookieShop.list[aLocationIndex];
   if (shop) {
@@ -265,38 +320,30 @@ Report.prototype.renderReport = function() {
   return newReport;
 };
 
-/**
- * This is a helper function to add an element with given tag name, optional text, and class names to the given parent
- *
- * @param {*} parent Optional parent element
- * @param {*} tagName tag name of the new element
- * @param {*} text Optional text content
- * @param {*} className Optional class name
- * @returns The newly created element
- */
-function addElement(parent, tagName, text, className) {
-  var newElement = document.createElement(tagName);
-  if (text) {
-    newElement.textContent = text;
+function renderAllReportsToPage() {
+  // Find the element to receive the output
+  var reportContainer = document.getElementById('report_container');
+
+  // Clear it
+  // the below is faster than main.innerHTML = '';
+  // https://stackoverflow.com/questions/3955229/remove-all-child-elements-of-a-dom-node-in-javascript
+  while (reportContainer.firstChild) {
+    reportContainer.removeChild(reportContainer.firstChild);
   }
-  if (className) {
-    newElement.className = className;
+
+  if (useControlCurve) {
+    addElement(reportContainer, 'h2', 'With Control Curve');
+  } else {
+    addElement(reportContainer, 'h2', 'Without Control Curve (Randomized Simulation)');
   }
-  if (parent) {
-    parent.appendChild(newElement);
-  }
-  return newElement;
+
+  reportContainer.appendChild(cookieReport.renderReport());
+  reportContainer.appendChild(customerReport.renderReport());
+  reportContainer.appendChild(tosserReport.renderReport());
 }
 
-function hourStr(hour) {
-  var result = ((hour + 11) % 12) + 1;
-  if (hour >= 12) {
-    result += 'pm';
-  } else {
-    result += 'am';
-  }
-  return result;
-}
+
+// Initialization Functions ---------------------------------------
 
 function initializeStores() {
   for (var i = 0; i < stores.length; i++) {
@@ -306,32 +353,73 @@ function initializeStores() {
   }
 }
 
-// Clear the table
-var reportContainer = document.getElementById('ReportContainer');
-// https://stackoverflow.com/questions/3955229/remove-all-child-elements-of-a-dom-node-in-javascript
-// below is faster than main.innerHTML = '';
-while (reportContainer.firstChild) {
-  reportContainer.removeChild(reportContainer.firstChild);
+function initializeReports() {
+  cookieReport = new Report('Daily Cookie Count', getCookieCountByLocationAndHour, SummarizeSum, 'Daily Location Total', SummarizeSum, 'Total');
+  customerReport = new Report('Daily Customer Count', getCustomerCountByLocationAndHour, SummarizeSum, 'Daily Location Total', SummarizeSum, 'Total');
+  tosserReport = new Report('Daily Cookie Tosser Report', getTosserCountByLocationAndHour, SummarizeMax, 'Daily Location Max', SummarizeMax, 'Max Tossers');
 }
 
-initializeStores();
+function onAddStoreFormSubmit(event) {
+  event.preventDefault();
+  console.log('Submit!');
 
-var cookieReport = new Report('Daily Cookie Count', getCookieCountByLocationAndHour, SummarizeSum, 'Daily Location Total', SummarizeSum, 'Total');
-var customerReport = new Report('Daily Customer Count', getCustomerCountByLocationAndHour, SummarizeSum, 'Daily Location Total', SummarizeSum, 'Total');
-var tosserReport = new Report('Daily Cookie Tosser Report', getTosserCountByLocationAndHour, SummarizeMax, 'Daily Location Max', SummarizeMax, 'Max Tossers');
+  var target = event.target;
+  console.log(target);
+  console.log(target.id);
 
-addElement(reportContainer, 'h2', 'Without Control Curve');
-useControlCurve = false;
-CookieShop.simulateAll();
+  var loc = target.loc_name.value;
+  var min = parseInt(target.min_cust.value);
+  var max = parseInt(target.max_cust.value);
+  var ave = parseFloat(target.ave_per_cust.value);
 
-reportContainer.appendChild(cookieReport.renderReport());
-reportContainer.appendChild(customerReport.renderReport());
-reportContainer.appendChild(tosserReport.renderReport());
+  var cs = new CookieShop(loc, min, max, ave);
 
-addElement(reportContainer, 'h2', 'With Control Curve');
-useControlCurve = true;
-CookieShop.simulateAll();
+  // Simulate a day only for the new cookie shop; the others are already done
+  cs.simulateDay();
+  console.log(cs);
 
-reportContainer.appendChild(cookieReport.renderReport());
-reportContainer.appendChild(customerReport.renderReport());
-reportContainer.appendChild(tosserReport.renderReport());
+  renderAllReportsToPage();
+  target.reset();
+}
+
+function initializeAddStoreForm() {
+  var from = document.getElementById('add_store_form');
+  from.addEventListener('submit', onAddStoreFormSubmit);
+}
+
+function onSimModeChange(event) {
+  var target = event.target;
+  console.log(target);
+  console.log(target.value);
+  useControlCurve = (target.value == 'C');
+  CookieShop.simulateAll();
+  renderAllReportsToPage();
+}
+
+function initializeSimModeForm() {
+  var from = document.getElementById('simulation_mode');
+  var mode = from.mode;
+
+  // Set form to reflect setting for no control curve (random mode)
+  mode.value = 'R';
+
+  // Set the useControlCurve global variable to match this setting
+  useControlCurve = false;
+
+  from.addEventListener('change', onSimModeChange);
+}
+
+function init() {
+  initializeStores();
+  initializeReports();
+  initializeAddStoreForm();
+  initializeSimModeForm();
+}
+
+function run() {
+  init();
+  CookieShop.simulateAll();
+  renderAllReportsToPage();
+}
+
+run();
