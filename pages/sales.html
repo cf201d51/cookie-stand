@@ -38,15 +38,15 @@
         <input type="text" name="loc_name" required>
 
         <label for="min_cust">Minimum Customers Per Hour</label>
-        <input type="number" name="min_cust" min="0" value="0">
+        <input type="number" name="min_cust" min="0" value="" required>
         <!-- <span class="validity"></span> -->
 
         <label for="max_cust">Maximum Customers Per Hour</label>
-        <input type="number" name="max_cust" min="0" value="0">
+        <input type="number" name="max_cust" min="0" value="" required>
         <!-- <span class="validity"></span> -->
 
         <label for="ave_per_cust">Average Cookies Per Customer</label>
-        <input type="number" name="ave_per_cust" min="0" step="0.1" value="0">
+        <input type="number" name="ave_per_cust" min="1" step="0.1" value="" required>
         <!-- <span class="validity"></span> -->
 
         <button id="submit_btn" type="submit">Add New Store</button>

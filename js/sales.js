@@ -16,10 +16,53 @@ var lastHour = 20;
 var controlCurve = [0.5, 0.75, 1.0, 0.6, 0.8, 1.0, 0.7, 0.4, 0.6, 0.9, 0.7, 0.5, 0.3, 0.4, 0.6];
 var useControlCurve = false;
 
-// Objects setup by initializeReports() to hold multiple report configurations
+// Objects set up by initializeReports() to hold multiple report configurations
 var cookieReport;
 var customerReport;
 var tosserReport;
+
+// Helper functions ---------------------------------------------
+
+/**
+ * Generate a string with the given hour in 12 hour am/pm format
+ *
+ * @param {*} hour
+ * @returns
+ */
+function hourStr(hour) {
+  var result = ((hour + 11) % 12) + 1;
+  if (hour >= 12) {
+    result += 'pm';
+  } else {
+    result += 'am';
+  }
+  return result;
+}
+
+/**
+ * This is a helper function to add an element with given tag name, optional text, and class names to the given parent
+ *
+ * @param {*} parent Optional parent element
+ * @param {*} tagName tag name of the new element
+ * @param {*} text Optional text content
+ * @param {*} className Optional class name
+ * @returns The newly created element
+ */
+function addElement(parent, tagName, text, className) {
+  var newElement = document.createElement(tagName);
+  if (text) {
+    newElement.textContent = text;
+  }
+  if (className) {
+    newElement.className = className;
+  }
+  if (parent) {
+    parent.appendChild(newElement);
+  }
+  return newElement;
+}
+
+// CSHour Object ---------------------------------------------
 
 /**
  * Creates an instance of the CSHour object (Cookie Shop Hour)
@@ -125,6 +168,13 @@ SummarizeSum.prototype.summary = function() {
 // Pass one of these functions to the Report constructor to determine
 // what is reported by location and hour
 
+/**
+ *
+ *
+ * @param {*} aLocationIndex
+ * @param {*} aHourIndex
+ * @returns
+ */
 function getCookieCountByLocationAndHour(aLocationIndex, aHourIndex) {
   var shop = CookieShop.list[aLocationIndex];
   if (shop) {
@@ -271,7 +321,6 @@ Report.prototype.renderReport = function() {
 };
 
 function renderAllReportsToPage() {
-
   // Find the element to receive the output
   var reportContainer = document.getElementById('report_container');
 
@@ -282,63 +331,17 @@ function renderAllReportsToPage() {
     reportContainer.removeChild(reportContainer.firstChild);
   }
 
-  addElement(reportContainer, 'h2', 'Without Control Curve');
-  useControlCurve = false;
-  CookieShop.simulateAll();
-
-  reportContainer.appendChild(cookieReport.renderReport());
-  reportContainer.appendChild(customerReport.renderReport());
-  reportContainer.appendChild(tosserReport.renderReport());
-
-  addElement(reportContainer, 'h2', 'With Control Curve');
-  useControlCurve = true;
-  CookieShop.simulateAll();
-
-  reportContainer.appendChild(cookieReport.renderReport());
-  reportContainer.appendChild(customerReport.renderReport());
-  reportContainer.appendChild(tosserReport.renderReport());
-}
-
-// Helper functions ---------------------------------------------
-
-/**
- * Generate a string with the given hour in 12 hour am/pm format
- *
- * @param {*} hour
- * @returns
- */
-function hourStr(hour) {
-  var result = ((hour + 11) % 12) + 1;
-  if (hour >= 12) {
-    result += 'pm';
+  if (useControlCurve) {
+    addElement(reportContainer, 'h2', 'With Control Curve');
   } else {
-    result += 'am';
+    addElement(reportContainer, 'h2', 'Without Control Curve (Randomized Simulation)');
   }
-  return result;
+
+  reportContainer.appendChild(cookieReport.renderReport());
+  reportContainer.appendChild(customerReport.renderReport());
+  reportContainer.appendChild(tosserReport.renderReport());
 }
 
-/**
- * This is a helper function to add an element with given tag name, optional text, and class names to the given parent
- *
- * @param {*} parent Optional parent element
- * @param {*} tagName tag name of the new element
- * @param {*} text Optional text content
- * @param {*} className Optional class name
- * @returns The newly created element
- */
-function addElement(parent, tagName, text, className) {
-  var newElement = document.createElement(tagName);
-  if (text) {
-    newElement.textContent = text;
-  }
-  if (className) {
-    newElement.className = className;
-  }
-  if (parent) {
-    parent.appendChild(newElement);
-  }
-  return newElement;
-}
 
 // Initialization Functions ---------------------------------------
 
@@ -356,28 +359,54 @@ function initializeReports() {
   tosserReport = new Report('Daily Cookie Tosser Report', getTosserCountByLocationAndHour, SummarizeMax, 'Daily Location Max', SummarizeMax, 'Max Tossers');
 }
 
-function onAddStorFormSubmit(event) {
+function onAddStoreFormSubmit(event) {
   event.preventDefault();
   console.log('Submit!');
 
+  var target = event.target;
+  console.log(target);
+  console.log(target.id);
+
+  var loc = target.loc_name.value;
+  var min = parseInt(target.min_cust.value);
+  var max = parseInt(target.max_cust.value);
+  var ave = parseFloat(target.ave_per_cust.value);
+
+  var cs = new CookieShop(loc, min, max, ave);
+
+  // Simulate a day only for the new cookie shop; the others are already done
+  cs.simulateDay();
+  console.log(cs);
+
   renderAllReportsToPage();
+  target.reset();
+}
+
+function initializeAddStoreForm() {
+  var from = document.getElementById('add_store_form');
+  from.addEventListener('submit', onAddStoreFormSubmit);
 }
 
 function onSimModeChange(event) {
   var target = event.target;
   console.log(target);
-  console.log(target.mode.value);
-}
-
-function initializeAddStoreForm() {
-  var from = document.getElementById('add_store_form');
-  from.addEventListener('submit', onAddStorFormSubmit);
+  console.log(target.value);
+  useControlCurve = (target.value == 'C');
+  CookieShop.simulateAll();
+  renderAllReportsToPage();
 }
 
 function initializeSimModeForm() {
   var from = document.getElementById('simulation_mode');
-  from.addEventListener('onchange', onSimModeChange);
+  var mode = from.mode;
 
+  // Set form to reflect setting for no control curve (random mode)
+  mode.value = 'R';
+
+  // Set the useControlCurve global variable to match this setting
+  useControlCurve = false;
+
+  from.addEventListener('change', onSimModeChange);
 }
 
 function init() {
@@ -387,9 +416,9 @@ function init() {
   initializeSimModeForm();
 }
 
-
 function run() {
   init();
+  CookieShop.simulateAll();
   renderAllReportsToPage();
 }
 
