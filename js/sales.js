@@ -372,7 +372,22 @@ function onAddStoreFormSubmit(event) {
   var max = parseInt(target.max_cust.value);
   var ave = parseFloat(target.ave_per_cust.value);
 
-  var cs = new CookieShop(loc, min, max, ave);
+  // See if we can find this one already in the collection
+  var cs;
+  for (var i = 0; i < CookieShop.list.length; i++) {
+    if (CookieShop.list[i].location.toUpperCase() === loc.toUpperCase()) {
+      cs = CookieShop.list[i];
+      break;
+    }
+  }
+
+  if (cs) {
+    cs.minCustPerHour = min;
+    cs.maxCustPerHour = max;
+    cs.avePerSale = ave;
+  } else {
+    cs = new CookieShop(loc, min, max, ave);
+  }
 
   // Simulate a day only for the new cookie shop; the others are already done
   cs.simulateDay();
