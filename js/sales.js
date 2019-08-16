@@ -372,7 +372,22 @@ function onAddStoreFormSubmit(event) {
   var max = parseInt(target.max_cust.value);
   var ave = parseFloat(target.ave_per_cust.value);
 
-  var cs = new CookieShop(loc, min, max, ave);
+  // See if we can find this one already in the collection
+  var cs;
+  for (var i = 0; i < CookieShop.list.length; i++) {
+    if (CookieShop.list[i].location.toUpperCase() === loc.toUpperCase()) {
+      cs = CookieShop.list[i];
+      break;
+    }
+  }
+
+  if (cs) {
+    cs.minCustPerHour = min;
+    cs.maxCustPerHour = max;
+    cs.avePerSale = ave;
+  } else {
+    cs = new CookieShop(loc, min, max, ave);
+  }
 
   // Simulate a day only for the new cookie shop; the others are already done
   cs.simulateDay();
@@ -409,11 +424,36 @@ function initializeSimModeForm() {
   from.addEventListener('change', onSimModeChange);
 }
 
+function onDarkModeChange(event) {
+  console.log(event.target.checked);
+  var body = document.getElementsByTagName('body')[0];
+  if (event.target.checked) {
+    body.setAttribute('class', 'dark_mode');
+  } else {
+    body.setAttribute('class', 'light_mode');
+  }
+}
+
+function initializeDarkModeForm() {
+  var form = document.getElementById('dark_mode');
+  var checkBox = form.dark;
+
+  // TODO: Set according to local storage
+  // Set form to reflect setting
+  checkBox.value = false;
+
+  var body = document.getElementsByTagName('body')[0];
+  body.setAttribute('class', 'light_mode');
+
+  checkBox.addEventListener('change', onDarkModeChange);
+}
+
 function init() {
   initializeStores();
   initializeReports();
   initializeAddStoreForm();
   initializeSimModeForm();
+  initializeDarkModeForm();
 }
 
 function run() {
