@@ -7,11 +7,11 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Sales</title>
   <!-- TODO: Use the reset! -->
-  <!-- <link rel="stylesheet" href="../css/reset.css"> -->
+  <link rel="stylesheet" href="../css/reset.css">
   <link rel="stylesheet" href="../css/style.css">
 </head>
 
-<body class="dark_mode">
+<body>
   <header>
     <nav>
       <ul>
@@ -21,66 +21,69 @@
     </nav>
   </header>
 
-  <!-- 
-  Form with input elements for the following:
-  - Store Location - required string
-  - Minimum Customers Per Hour - required integer
-  - Maximum Customers Per Hour - required integer
-  - Average Cookies Per Customer - required decimal number
-  - Submit button
- -->
+  <main>
 
-  <form id="add_store_form">
-    <fieldset>
-      <legend>New Store</legend>
-      <div>
-        <label for="loc_name">Location</label>
-        <input type="text" name="loc_name" required>
+    <!-- 
+      Form with input elements for the following:
+      - Store Location - required string
+      - Minimum Customers Per Hour - required integer
+      - Maximum Customers Per Hour - required integer
+      - Average Cookies Per Customer - required decimal number
+      - Submit button
+    -->
 
-        <label for="min_cust">Minimum Customers Per Hour</label>
-        <input type="number" name="min_cust" min="0" value="" required>
-        <!-- <span class="validity"></span> -->
+    <form id="add_store_form">
+      <fieldset>
+        <legend>New Store</legend>
+        <div>
+          <label for="loc_name">Location</label>
+          <input type="text" name="loc_name" required>
 
-        <label for="max_cust">Maximum Customers Per Hour</label>
-        <input type="number" name="max_cust" min="0" value="" required>
-        <!-- <span class="validity"></span> -->
+          <label for="min_cust">Minimum Customers Per Hour</label>
+          <input type="number" name="min_cust" min="0" value="" required>
+          <!-- <span class="validity"></span> -->
 
-        <label for="ave_per_cust">Average Cookies Per Customer</label>
-        <input type="number" name="ave_per_cust" min="1" step="0.1" value="" required>
-        <!-- <span class="validity"></span> -->
+          <label for="max_cust">Maximum Customers Per Hour</label>
+          <input type="number" name="max_cust" min="0" value="" required>
+          <!-- <span class="validity"></span> -->
 
-        <button id="submit_btn" type="submit">Add New Store</button>
-      </div>
-    </fieldset>
-  </form>
+          <label for="ave_per_cust">Average Cookies Per Customer</label>
+          <input type="number" name="ave_per_cust" min="1" step="0.1" value="" required>
+          <!-- <span class="validity"></span> -->
 
-  <form id="simulation_mode">
-    <fieldset>
-      <legend>Simulation Mode</legend>
-      <label for="random">Random</label>
-      <input type="radio" name="mode" id="random" value="R" />
-      <label for="curve">Control Curve</label>
-      <input type="radio" name="mode" id="curve" value="C" />
-    </fieldset>
-  </form>
-  <form id="dark_mode">
-    <fieldset>
-      <legend>Display</legend>
-      <label for="dark">Dark mode</label>
-      <input type="checkbox" name="dark" id="dark">
-    </fieldset>
-  </form>
+          <button id="submit_btn" type="submit">Add New Store</button>
+        </div>
+      </fieldset>
+    </form>
 
-  <section id="report_container">
+    <form id="simulation_mode">
+      <fieldset>
+        <legend>Simulation Mode</legend>
+        <label for="random">Random</label>
+        <input type="radio" name="mode" id="random" value="R" />
+        <label for="curve">Control Curve</label>
+        <input type="radio" name="mode" id="curve" value="C" />
+      </fieldset>
+    </form>
+    <form id="dark_mode">
+      <fieldset>
+        <legend>Display</legend>
+        <label for="dark">Dark mode</label>
+        <input type="checkbox" name="dark" id="dark">
+      </fieldset>
+    </form>
+    <div class="clear"></div>
 
-  </section>
+    <section id="report_container">
+    </section>
+
+  </main>
+
+  <footer>
+    &copy2019 Jonathan Kimball
+  </footer>
 
 </body>
-
-<footer>
-  &copy 2019 Jonathan Kimball
-</footer>
-
 
 <script src="../js/sales.js"></script>
 

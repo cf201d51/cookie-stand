@@ -342,7 +342,6 @@ function renderAllReportsToPage() {
   reportContainer.appendChild(tosserReport.renderReport());
 }
 
-
 // Initialization Functions ---------------------------------------
 
 function initializeStores() {
@@ -381,6 +380,7 @@ function onAddStoreFormSubmit(event) {
     }
   }
 
+  // If we found it, update the parameters, otherwise construct a new one
   if (cs) {
     cs.minCustPerHour = min;
     cs.maxCustPerHour = max;
@@ -424,14 +424,18 @@ function initializeSimModeForm() {
   from.addEventListener('change', onSimModeChange);
 }
 
-function onDarkModeChange(event) {
-  console.log(event.target.checked);
+function setDarkMode(dark) {
   var body = document.getElementsByTagName('body')[0];
-  if (event.target.checked) {
+  if (dark) {
     body.setAttribute('class', 'dark_mode');
   } else {
     body.setAttribute('class', 'light_mode');
   }
+}
+
+function onDarkModeChange(event) {
+  console.log(event.target.checked);
+  setDarkMode(event.target.checked);
 }
 
 function initializeDarkModeForm() {
@@ -440,11 +444,9 @@ function initializeDarkModeForm() {
 
   // TODO: Set according to local storage
   // Set form to reflect setting
-  checkBox.value = false;
+  // checkBox.checked = false;
 
-  var body = document.getElementsByTagName('body')[0];
-  body.setAttribute('class', 'light_mode');
-
+  setDarkMode(checkBox.checked);
   checkBox.addEventListener('change', onDarkModeChange);
 }
 

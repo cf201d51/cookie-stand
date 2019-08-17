@@ -2,13 +2,32 @@
   /* outline: 2.5px dotted rgba(0, 255, 13, 0.705); */
 }
 
+/* `Clear Floated Elements
+----------------------------------------------------------------------------------------------------*/
+
+/* http://sonspring.com/journal/clearing-floats */
+
+.clear {
+  clear: both;
+  display: block;
+  overflow: hidden;
+  visibility: hidden;
+  width: 0;
+  height: 0;
+}
+
+html {
+  /* overflow: hidden; */
+}
+
 body {
   color: #2C7A7A;
   font-family: Helvetica, Arial, sans-serif;
   background-color: #EDC9B4;
-  margin: 1em;
+  margin: 1.3vw;
   transition: 350ms color;
   transition: 350ms background-color;
+  font-size: 1.3vw;
 }
 
 .dark_mode {
@@ -16,10 +35,29 @@ body {
   background-color: #333;
 }
 
+fieldset {
+  border-width: 1.5px;
+  border-style: solid;
+  border-radius: .4em;
+  padding: 0.2em 0.5em 0.5em 0.5em;
+  margin: 0.4em 0 0.4em 0;
+}
+
 #report_container {
-  margin: 1em;
-  padding: 1em;
-  border: 1px solid black;
+  margin: 1.3vw 0 1.3vw 0;
+  padding: 1.3vw;
+  border: 1.5px solid #2C7A7A;
+  border-radius: .4em;
+  /* transition: 350ms font-size; */
+  text-align: center;
+}
+
+body.dark_mode #report_container {
+  border: 1.5px solid #eee;
+}
+
+#report_container>h2:first-of-type {
+  margin-top: 0;
 }
 
 body>header>nav>ul>li {
@@ -63,17 +101,6 @@ li {
   list-style-type: none;
 }
 
-#output ul {
-  float: left;
-  /* box-sizing: content-box; */
-  width: fit-content;
-  margin: 1em;
-}
-
-#output>ul>li {
-  margin-left: 1em;
-}
-
 .logo {
   display: block;
   margin: auto;
@@ -99,38 +126,118 @@ input:valid+span:after {
   padding-left: 5px;
 }
 
-body>form>#submit_btn {
+/* body>form> */
+#submit_btn {
   /* position: absolute; */
   /* right: 0; */
   float: right;
+  margin: 0.5em 0.5em 0.5em 0.5em;
 }
 
-table tr td:first-child {
+#simulation_mode {
+  float: left;
+  width: 49.5%;
+}
+
+#dark_mode {
+  float: right;
+  width: 49.5%;
+}
+
+.report {
+  display: inline-block;
+  margin-bottom: .75em;
+}
+
+.report>table {
+  margin: 0 auto;
+}
+
+.report>table tr td:first-child,
+td:last-child {
   font-size: 1.17em;
 }
 
-table tr {
-  transition: 350ms all;
+.report>table tr {
+  transition: 200ms color;
+  transition: 200ms background-color;
 }
 
-table td:nth-child(2n+1) {
-  background-color: hsl(22, 61%, 85%);
+.report>table>tbody td:nth-child(2n+1) {
+  background-color: hsl(22, 61%, 88%);
 }
 
-body.dark_mode table td:nth-child(2n+1) {
+body.dark_mode .report>table>tbody td:nth-child(2n+1) {
   background-color: #555;
 }
 
-.report>table tr:hover {
-  background-color: hsl(22, 61%, 99%);
+.report>table>tbody tr:hover {
+  background-color: hsl(22, 61%, 92%);
+  outline: 1px solid;
 }
 
-body.dark_mode .report>table tr:hover {
+body.dark_mode .report>table>tbody tr:hover {
   background-color: #666;
 }
 
-tr,
+td,
+th {
+  /* border: 02px; */
+  /* margin: 30px; */
+  padding: 6px;
+}
+
 td {
-  border: 0;
-  margin: 0;
+  text-align: right;
+}
+
+thead,
+tfoot {
+  font-size: 1.17em;
+}
+
+
+h1 {
+  font-size: 2em;
+  margin: .67em 0
+}
+
+h2 {
+  font-size: 1.5em;
+  margin: .75em 0
+}
+
+h3 {
+  font-size: 1.17em;
+  margin: .83em 0
+}
+
+h4 {
+  margin: 1.12em 0
+}
+
+h5 {
+  font-size: .83em;
+  margin: 1.5em 0
+}
+
+h6 {
+  font-size: .75em;
+  margin: 1.67em 0
+}
+
+p {
+  display: block;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+b {
+  font-weight: bold;
+}
+
+footer {
+  text-align: center;
 }
