@@ -2,6 +2,21 @@
   /* outline: 2.5px dotted rgba(0, 255, 13, 0.705); */
 }
 
+/* `Clear Floated Elements
+----------------------------------------------------------------------------------------------------*/
+
+/* http://sonspring.com/journal/clearing-floats */
+
+.clear {
+  clear: both;
+  display: block;
+  overflow: hidden;
+  visibility: hidden;
+  width: 0;
+  height: 0;
+}
+
+
 body {
   color: #2C7A7A;
   font-family: Helvetica, Arial, sans-serif;

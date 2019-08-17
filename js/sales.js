@@ -342,7 +342,6 @@ function renderAllReportsToPage() {
   reportContainer.appendChild(tosserReport.renderReport());
 }
 
-
 // Initialization Functions ---------------------------------------
 
 function initializeStores() {
@@ -381,6 +380,7 @@ function onAddStoreFormSubmit(event) {
     }
   }
 
+  // If we found it, update the parameters, otherwise construct a new one
   if (cs) {
     cs.minCustPerHour = min;
     cs.maxCustPerHour = max;
