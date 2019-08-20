@@ -273,10 +273,10 @@ Report.prototype.renderReportRow = function (aLocationIndex) {
   for (var i = firstHour; i <= lastHour; i++) {
     value = this.cellValueFunction(aLocationIndex, i);
     rowSummary.includeValue(value);
-    addElement(newRow, 'td', value);
+    addElement(newRow, 'td', `${value}`);
   }
 
-  addElement(newRow, 'td', rowSummary.summary());
+  addElement(newRow, 'td', `${rowSummary.summary()}`);
   return newRow;
 };
 
@@ -298,10 +298,10 @@ Report.prototype.renderReportFooter = function () {
 
     value = colSummary.summary();
     rowSummary.includeValue(value);
-    addElement(newRow, 'td', value);
+    addElement(newRow, 'td', `${value}`);
   }
 
-  addElement(newRow, 'td', rowSummary.summary());
+  addElement(newRow, 'td', `${rowSummary.summary()}`);
   return newFooter;
 };
 
